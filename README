@@ -1,0 +1,78 @@
+has_storage
+===========
+
+Organize directories and files, respecting a maximum number of items per 
+directory.
+
+Instalation
+-----------
+
+1) Install the plugin with `script/plugin install git://github.com/fnando/has_storage.git`
+2) Generate a migration with `script/generate migration create_storages` and add the following code:
+
+class CreateStorages < ActiveRecord::Migration
+  def self.up
+    create_table :storages do |t|
+      t.string :name, :cluster
+    end
+    
+    add_index :storages, [:name, :cluster]
+  end
+
+  def self.down
+    drop_table :storages
+  end
+end
+
+3) Run the migrations with `rake db:migrate`
+
+Usage
+-----
+
+1) Add the method call `has_storage` to your model.
+
+class User < ActiveRecord::Base
+  has_storage
+  
+  attr_accessible :avatar_file
+  
+  after_save :save_avatar
+  
+  private
+    def save_avatar
+      return if avatar_file.blank?
+      write_attribute(:avatar_path, allocate(:avatars, :file => avatar_file, :file_name => "#{id}-avatar.jpg"))
+      self.avatar_file = nil
+      save
+    end
+end
+
+# has_storage accepts the following options; here it is
+# the default values
+has_storage :base_dir => "#{Rails.root}/public/storage"
+has_storage :hex => false
+has_storage :depth => 3
+has_storage :max_items => 4096
+
+# you can allocate a path by calling `allocate`.
+# the following code will generate a path for the user avatar.
+# it works better if put such logic in a after_create callback.
+# by default, the storage folder is located at `public/storage/<storage_name>/`.
+user = User.new(params[:user])
+user.avatar_path = user.allocate(:avatars, :file_name => 'avatar.jpg')
+
+# change storage folder
+user.avatar_path = user.allocate(:avatars, :file => "#{RAILS_ROOT}/storage", :file_name => 'avatar.jpg')
+
+# you can move files that are already on disk
+user.avatar_path = user.allocate(:avatars, :file => "#{RAILS_ROOT}/images/test.jpg")
+
+# you can allocate and create a directory
+user.allocate(:avatars, :directory => user.id)
+
+# getting storage path
+@user.storage_path_for(:avatars)
+@user.storage_path_for(:avatars, "1.jpg")
+@user.storage_path_for(:avatars, "1/1/1", "1.jpg")
+
+Copyright (c) 2007-2008 Nando Vieira, released under the MIT license
