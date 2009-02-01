@@ -62,7 +62,7 @@ module SimplesIdeias
 
           # convert directory names to correspondent hex
           # example: 1/1/160 will be saved as 1/1/a0
-          cluster_parts.collect!{|dir| "%x" % dir.to_i } if self.class.has_storage_options[:hex]
+          cluster_parts.collect!{|dir| ("%x" % dir.to_i).upcase } if self.class.has_storage_options[:hex]
           
           # join all cluster parts
           cluster_dirs = cluster_parts.join("/")

@@ -1,4 +1,4 @@
-require "spec_helper"
+require File.dirname(__FILE__) + "/spec_helper"
 
 # unset models used for testing purposes
 Object.unset_class('User')
@@ -98,7 +98,7 @@ describe "has_storage" do
     
     it "should create storage path using hex" do
       @storage = @user.allocate(:avatars, :file => @image)
-      @storage.should == "ff/12c"
+      @storage.should == "FF/12C"
     end
   end
   
