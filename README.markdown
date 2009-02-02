@@ -61,7 +61,6 @@ Usage
 2) Available options:
 
 	:base_dir  => Where the storage directory will reside. Can be interpolated.
-	:from      => The file that will be saved/moved. Can be an string, File object or Upload object
 	:to        => The output file name. Can be interpolated.
 	:hex       => Save cluster sloth as hex number
 	:depth     => Define the cluster structure depth
@@ -71,7 +70,7 @@ Usage
 To remove any saved file, just add `after_destroy :destroy_file!`.
 This will update the model if nil values.
     
-Some options can be interpolated, like `:base_dir`, `:to` and `:from`. This means
+Some options can be interpolated, like `:base_dir` and `:to`. This means
 that you can set attributes/methods from the instance object to build your path.
     
 	has_storage :base_dir => ":rails_root/storage", :to => ":user_id-:uid.:extension"
