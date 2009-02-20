@@ -163,7 +163,7 @@ describe "has_storage" do
       
       @now = Time.now.utc
       Time.stub!(:now).and_return(@now)
-      CGI::Session.should_receive(:generate_unique_id).with("#{@now}users#{@homer.id}").and_return("abc")
+      Digest::SHA1.should_receive(:hexdigest).with("#{@now}users#{@homer.id}").and_return("abc")
       
       @homer.file = @file
       @homer.save

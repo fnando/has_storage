@@ -125,7 +125,7 @@ module SimplesIdeias
               when "extension"    then extension
               when "storage_name" then storage_name
               when "hash"         then
-                CGI::Session.generate_unique_id("#{Time.now.utc}#{storage_name}#{instance.id}")
+                Digest::SHA1.hexdigest("#{Time.now.utc}#{storage_name}#{instance.id}")
               else
                 instance.send(placeholder).to_s
             end
